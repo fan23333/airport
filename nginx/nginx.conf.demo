@@ -1,0 +1,81 @@
+
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
+    types_hash_max_size 2048;
+
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    gzip on;
+
+    server {
+        listen 443 ssl;
+        
+        server_name airport.domain.com;  #你的域名
+        ssl_certificate       /cert/server.crt;  #证书位置
+        ssl_certificate_key   /cert/server.key; #私钥位置
+        
+        ssl_session_timeout 1d;
+        ssl_session_cache shared:MozSSL:10m;
+        ssl_session_tickets off;
+        ssl_protocols    TLSv1.2 TLSv1.3;
+        ssl_prefer_server_ciphers off;
+
+        location / {
+            proxy_pass https://bing.com; #伪装网址
+            proxy_redirect off;
+            proxy_ssl_server_name on;
+            sub_filter_once off;
+            sub_filter "bing.com" $server_name;
+            proxy_set_header Host "bing.com";
+            proxy_set_header Referer $http_referer;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header User-Agent $http_user_agent;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header Accept-Encoding "";
+            proxy_set_header Accept-Language "zh-CN";
+        }
+
+
+        location /ray {   #分流路径
+            proxy_redirect off;
+            proxy_pass http://x-ui:10000; #Xray端口
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+        
+        location /xui {   #xui路径
+            proxy_redirect off;
+            proxy_pass http://x-ui:54321;  #xui监听端口
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+        }
+    }
+
+    server {
+        listen 80;
+        location /.well-known/ {
+               root /var/www/html;
+            }
+        location / {
+                rewrite ^(.*)$ https://$host$1 permanent;
+            }
+    }
+}
+

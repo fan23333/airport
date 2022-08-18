@@ -1,0 +1,46 @@
+version: '3.3'
+services:
+    x-ui:
+        ports:
+            - '54321:54321'
+        volumes:
+            - './x-ui:/etc/x-ui'
+        environment:
+            - TZ=Asia/Shanghai
+        container_name: x-ui
+        restart: unless-stopped
+        image: 'enwaiax/x-ui:latest'
+        networks:
+            - airport
+    acme.sh:
+        volumes:
+            - './cert:/cert'
+            - './www:/www'
+        restart: unless-stopped
+        command: daemon
+        container_name: acme.sh
+        environment:
+            - TZ=Asia/Shanghai
+        image: neilpang/acme.sh
+        networks:
+            - airport
+        depends_on:
+            - nginx
+    nginx:
+        container_name: nginx
+        restart: unless-stopped
+        environment:
+            - TZ=Asia/Shanghai
+        volumes: 
+            - './cert:/cert'
+            - './nginx/nginx.conf:/etc/nginx/nginx.conf'
+            - './www:/usr/share/nginx/html'
+        ports:
+            - '80:80'
+            - '443:443'
+        image: nginx
+        networks:
+            - airport
+networks:
+    airport:
+
