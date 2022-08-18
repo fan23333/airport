@@ -13,3 +13,5 @@ sudo mkdir ariport && cd airport
 sudo curl -L "https://raw.githubusercontent.com/fan23333/airport/main/install.sh" -o ./install.sh && sudo bash ./install.sh
 
 根据指引进行安装
+
+根据不良林https://www.youtube.com/watch?v=s90feRmdr9A教程总结
