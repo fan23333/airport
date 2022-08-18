@@ -212,7 +212,7 @@ usrCheck
 
 clear
 
-echo "请通过https://$domain:$xui/访问面板"
+echo "请通过https://$domain/$xui/访问面板"
 echo "入站列表->查看，复制链接，导入到客户端"
 confirm=k
 usrCheck
