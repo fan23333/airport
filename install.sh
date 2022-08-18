@@ -86,7 +86,7 @@ usrCheck
 
 
 
-echo "切换阻塞算法为BBR"
+echo "检测阻塞算法"
 if [[ "$(echo $(sysctl net.ipv4.tcp_congestion_control) | grep "bbr")" == "" ]]; then
     echo "设置阻塞模式为BBR";
     echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
@@ -203,8 +203,17 @@ usrCheck
 clear
 
 
-echo "重启nginx中请等待"
+
+echo "关闭54321端口防止被扫描"
+sed -i "s/- '54321:54321'/- '12345:12345'/g" ./docker-compose.yaml
+
+echo "重启docker"
+docker-compose up -d
+
+
+echo "重启nginx"
 sudo docker restart nginx 
+sleep 3s 
 echo "nginx重启完毕"
 echo "请检查https://$domain/是否为正常站点"
 confirm=k
