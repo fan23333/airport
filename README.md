@@ -16,7 +16,7 @@
 
 cd 到你要安装到的目录
 
-sudo mkdir ariport && cd airport
+sudo mkdir airport && cd airport
 
 sudo curl -L "https://raw.githubusercontent.com/fan23333/airport/main/install.sh" -o ./install.sh && sudo bash ./install.sh
 
