@@ -87,7 +87,7 @@ usrCheck
 
 
 echo "切换阻塞算法为BBR"
-if [[ "$(sysctl net.ipv4.tcp_congestion_control)" =~ "bbr" ]]; then
+if [[ "$(echo $(sysctl net.ipv4.tcp_congestion_control) | grep "bbr")" == "" ]]; then
     echo "设置阻塞模式为BBR";
     echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
     echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
@@ -173,7 +173,7 @@ clear
 echo "2.入站列表->点击+添加节点"
 echo "  备注：随意"
 echo "  协议：vmess"
-echo "  监听IP：0.0.0.0"
+echo "  监听IP：0.0.0.0或不填写"
 echo "  端口：随意设置1000-60000之间的数字"
 port=10000
 read -p "  在此键入您刚刚设置的端口:" port 
@@ -190,7 +190,8 @@ usrCheck
 
 clear
 
-echo "3.面板设置->不要修改监听IP"
+echo "3.面板设置
+echo "  不要修改监听IP"
 echo "  设置一个面板url路径，此路径不应该过于简单，防止防火墙侦测，也不可设置成与id完全一样"
 read -p "  在此粘贴路径（前后均不带'/'）:" xui
 sudo sed -i 's/location \/xui/location \/'$xui'/g' ./nginx/nginx.conf
@@ -230,8 +231,3 @@ clear
 echo "本向导已完成，感谢您使用"
 echo "跑到已清空，允许起飞"
 echo "runway clear, allow to take off"
-
-
-
-
-
