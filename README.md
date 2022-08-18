@@ -14,4 +14,4 @@ sudo curl -L "https://raw.githubusercontent.com/fan23333/airport/main/install.sh
 
 根据指引进行安装
 
-根据不良林https://www.youtube.com/watch?v=s90feRmdr9A教程总结
+根据不良林 https://www.youtube.com/watch?v=s90feRmdr9A 教程总结
