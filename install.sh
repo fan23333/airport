@@ -229,5 +229,6 @@ usrCheck
 clear
 
 echo "本向导已完成，感谢您使用"
+echo "您可以通过sudo bash ./install.sh命令重新运行此向导"
 echo "跑到已清空，允许起飞"
 echo "runway clear, allow to take off"
